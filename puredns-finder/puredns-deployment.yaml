@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: puredns-deployment
+  namespace: default
+spec:
+  replicas: 10
+  selector:
+    matchLabels:
+      app: puredns
+  template:
+    metadata:
+      labels:
+        app: puredns
+    spec:
+      containers:
+      - name: puredns
+        image: your-puredns-finder-image-here
+        resources:
+          limits:
+            memory: "500Mi"
+            cpu: "1"
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: DATABASE_URL
+        - name: GCS_BUCKET
+          value: your-gcs-bucket
+        - name: WORDLIST_FILE
+          value: wordlist.txt
+        - name: RESOLVERS_FILE
+          value: resolvers.txt
+        - name: RATE_LIMIT
+          value: "0"

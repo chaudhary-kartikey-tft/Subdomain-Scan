@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scanner-deployment
+  namespace: default
+spec:
+  replicas: 10
+  selector:
+    matchLabels:
+      app: scanner
+  template:
+    metadata:
+      labels:
+        app: scanner
+    spec:
+      containers:
+      - name: scanner
+        image: your-subdomain-finder-image-here
+        resources:
+          limits:
+            memory: "500Mi"
+            cpu: "500m"
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: DATABASE_URL
+        - name: GCP_PROJECT
+          value: your-gcp-project
+        - name: PUBSUB_SUBSCRIPTION
+          value: your-pubsub-subscription
+        
